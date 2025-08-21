@@ -4,11 +4,14 @@ import { RouterProvider } from "react-router-dom";
 import "./index.css";
 import { router } from "./routes.jsx";
 import { DataProvider } from "./Context/DataContext.jsx";
+import { App as AntdApp } from "antd";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <DataProvider>
-      <RouterProvider router={router} />
+      <AntdApp>
+        <RouterProvider router={router} />
+      </AntdApp>
     </DataProvider>
   </StrictMode>
 );

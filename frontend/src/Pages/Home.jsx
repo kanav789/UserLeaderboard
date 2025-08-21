@@ -3,9 +3,11 @@ import React, { useContext, useEffect, useState } from "react";
 import axiox from "axios";
 import { DataContext } from "../Context/DataContext.jsx";
 import { BounceLoader } from "react-spinners";
+import AddUser from "../components/AddUser.jsx";
 function Home() {
   const { data, setData } = useContext(DataContext);
   const [Loader, setLoader] = useState(false);
+  const [AddOpen, setAddOpen] = useState(false);
   useEffect(() => {
     fetchAllUser();
   }, []);
@@ -54,7 +56,10 @@ function Home() {
       {/* Header */}
       <div className="w-full max-w-2xl bg-white shadow-md rounded-2xl p-4 flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold text-black">Claim Record</h2>
-        <button className="px-4 py-2 bg-black text-white rounded-xl hover:bg-gray-800 transition  font-semibold cursor-pointer">
+        <button
+          className="px-4 py-2 bg-black text-white rounded-xl hover:bg-gray-800 transition  font-semibold cursor-pointer"
+          onClick={() => setAddOpen(true)}
+        >
           + Add User
         </button>
       </div>
@@ -76,6 +81,8 @@ function Home() {
           />
         </div>
       )}
+
+      <AddUser isOpen={AddOpen} onClose={() => setAddOpen(false)} />
     </section>
   );
 }
