@@ -96,7 +96,7 @@ function AddUser({ isOpen, onClose }) {
               type="primary"
               htmlType="submit"
               loading={loading}
-              className="!bg-black !text-white hover:!bg-gray-800 rounded-md"
+              className="bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 border-0 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
             >
               Add User
             </Button>
