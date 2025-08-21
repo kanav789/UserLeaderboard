@@ -1,6 +1,6 @@
-import { Button, Table } from "antd";
+import { Button, Table, App } from "antd";
 import React, { useContext, useEffect, useState } from "react";
-import axiox from "axios";
+import axios from "axios";
 import { DataContext } from "../Context/DataContext.jsx";
 import { BounceLoader } from "react-spinners";
 import AddUser from "../components/AddUser.jsx";
@@ -8,13 +8,14 @@ function Home() {
   const { data, setData } = useContext(DataContext);
   const [Loader, setLoader] = useState(false);
   const [AddOpen, setAddOpen] = useState(false);
+  const { message } = App.useApp();
   useEffect(() => {
     fetchAllUser();
   }, []);
   const fetchAllUser = async () => {
     try {
       setLoader(true);
-      const response = await axiox.get(
+      const response = await axios.get(
         `${import.meta.env.VITE_BASE_URL}api/user/all`
       );
       setData(response?.data?.data?.users);
@@ -22,6 +23,21 @@ function Home() {
     } catch (error) {
       console.log(error);
       setLoader(false);
+    }
+  };
+
+  const claimTotalPoints = async (id) => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}api/user/claim`,
+        { userId: id }
+      );
+      message.success(response?.data?.message || "Claim successful");
+      fetchAllUser();
+    } catch (error) {
+      const errorMsg =
+        error?.response?.data?.message || error?.message || "Failed to claim";
+      message.error(errorMsg);
     }
   };
 
@@ -40,9 +56,9 @@ function Home() {
       title: "Action",
       dataIndex: "action",
       key: "action",
-      render: (key) => (
+      render: (_text, record) => (
         <>
-          <Button>Claim</Button>
+          <Button onClick={() => claimTotalPoints(record?._id)}>Claim</Button>
         </>
       ),
     },
@@ -56,12 +72,18 @@ function Home() {
       {/* Header */}
       <div className="w-full max-w-2xl bg-white shadow-md rounded-2xl p-4 flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold text-black">Claim Record</h2>
-        <button
-          className="px-4 py-2 bg-black text-white rounded-xl hover:bg-gray-800 transition  font-semibold cursor-pointer"
-          onClick={() => setAddOpen(true)}
-        >
-          + Add User
-        </button>
+
+        <div className="flex gap-2">
+          <button className="px-4 py-2 bg-black text-white rounded-xl hover:bg-gray-800 transition  font-semibold cursor-pointer">
+            Leaderboard
+          </button>
+          <button
+            className="px-4 py-2 bg-black text-white rounded-xl hover:bg-gray-800 transition  font-semibold cursor-pointer"
+            onClick={() => setAddOpen(true)}
+          >
+            + Add User
+          </button>
+        </div>
       </div>
 
       {/* Table */}
@@ -74,6 +96,7 @@ function Home() {
           <Table
             dataSource={data}
             columns={columns}
+            rowKey="_id"
             className="overflow-x-auto "
             pagination={{
               pageSize: 5,
